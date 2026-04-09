@@ -1,0 +1,48 @@
+[2주차 실습2 - gdb 설명]
+
+실습 코드:
+#include <stdio.h>
+
+int main(void)
+{
+    int i;
+    double num;
+
+    for (i = 0; i < 5; i++) {
+        num = i/2 + i;
+        printf("num is %f \n", num);
+    }
+
+    return 0;
+}
+
+문제가 되는 부분:
+num = i/2 + i;
+
+문제 원인:
+i는 int형이므로 i/2는 정수 나눗셈으로 계산된다.
+따라서 소수 부분이 버려진다.
+num은 double형이지만, 이미 i/2 계산이 끝난 뒤 저장되므로
+원하는 실수 결과가 나오지 않는다.
+
+예:
+i=1일 때 i/2 = 0
+i=3일 때 i/2 = 1
+
+gdb에서 확인하는 방법:
+1. gcc -g -o test test.c
+2. gdb ./test
+3. b 9
+4. r
+5. display i
+6. s
+7. p num
+
+수정 방법:
+num = i / 2.0 + i;
+또는
+num = (double)i / 2 + i;
+
+결론:
+문제의 원인은 num의 자료형이 아니라,
+식 i/2에서 정수 나눗셈이 발생한다는 점이다.
